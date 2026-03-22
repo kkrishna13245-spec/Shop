@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mithai Mahal</title>
+
+<style>
+body{font-family:Arial;background:#FDF6EC;margin:0}
+.nav{background:#E8732A;color:#fff;padding:12px;text-align:center;font-size:20px}
+.container{padding:15px}
+.card{background:#fff;padding:12px;margin:10px 0;border-radius:10px}
+button{
+padding:10px;border:none;background:#E8732A;color:#fff;
+border-radius:8px;margin-top:5px;width:100%;
+}
+select{padding:10px;width:100%;margin:10px 0;border-radius:8px}
+</style>
+</head>
+
+<body>
+
+<div class="nav">Mithai Mahal</div>
+
+<div class="container">
+
+<h3>Products</h3>
+<div id="products"></div>
+
+<h3>Cart</h3>
+<div id="cart"></div>
+
+<h3 id="total"></h3>
+
+<h3>Payment Method</h3>
+<select id="paymentMethod">
+<option value="UPI">UPI / Online Payment</option>
+<option value="COD">Cash on Delivery</option>
+</select>
+
+<button onclick="placeOrder()">Place Order</button>
+
+</div>
+
+<script>
+
+// PRODUCTS
+let products=[
+{name:"Kaju Katli",price:450},
+{name:"Besan Ladoo",price:320},
+{name:"Jalebi",price:280},
+{name:"Rasgulla",price:300}
+];
+
+// CART
+let cart=[];
+
+// LOAD PRODUCTS
+function loadProducts(){
+let html="";
+products.forEach((p,i)=>{
+html+=`
+<div class="card">
+${p.name} - ₹${p.price}
+<button onclick="add(${i})">Add</button>
+</div>`;
+});
+document.getElementById("products").innerHTML=html;
+}
+
+// ADD TO CART
+function add(i){
+cart.push({i,qty:1});
+renderCart();
+}
+
+// SHOW CART
+function renderCart(){
+let html="";
+let total=0;
+
+cart.forEach(c=>{
+let p=products[c.i];
+let price=p.price*c.qty;
+total+=price;
+
+html+=`${p.name} - ₹${price}<br>`;
+});
+
+document.getElementById("cart").innerHTML=html;
+
+let delivery = total>=500?0:40;
+let final = total+delivery;
+
+document.getElementById("total").innerText =
+"Total ₹"+final+" (Delivery ₹"+delivery+")";
+}
+
+// PLACE ORDER (MAIN LOGIC)
+function placeOrder(){
+
+if(cart.length==0){
+alert("Cart empty");
+return;
+}
+
+let method = document.getElementById("paymentMethod").value;
+
+let total=0;
+let items="";
+
+cart.forEach(c=>{
+let p=products[c.i];
+let price=p.price*c.qty;
+
+total+=price;
+items+=`${p.name} - ₹${price}\\n`;
+});
+
+let delivery = total>=500?0:40;
+total+=delivery;
+
+// COMMON WHATSAPP MESSAGE
+let msg = `🧾 Mithai Mahal Order
+
+Items:
+${items}
+
+Delivery: ₹${delivery}
+Total: ₹${total}
+
+Payment Method: ${method}`;
+
+// 👉 WhatsApp always open
+window.open(`https://wa.me/919264945100?text=${encodeURIComponent(msg)}`);
+
+// 👉 ONLY UPI PAYMENT CONDITION
+if(method === "UPI"){
+
+let upi = `upi://pay?pa=9264945100@upi&pn=Mithai%20Mahal&am=${total}&cu=INR`;
+
+setTimeout(()=>{
+window.location.href = upi;
+},1000);
+
+}else{
+alert("Order placed with Cash on Delivery");
+}
+
+// CLEAR CART
+cart=[];
+renderCart();
+
+}
+
+// INIT
+loadProducts();
+
+</script>
+
+</body>
+</html>
