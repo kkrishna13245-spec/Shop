@@ -7,6 +7,42 @@
 (function(){
 emailjs.init("zFU2kJGQjIK3IVtQ_");
 })();
+    let generatedOTP = "";
+let otpVerified = false;
+    function sendOTP(){
+
+let email = document.getElementById("email").value;
+
+if(!email){
+alert("Enter Email");
+return;
+}
+function verifyOTP(){
+
+let entered = document.getElementById("otpInput").value;
+
+if(entered == generatedOTP){
+otpVerified = true;
+alert("OTP Verified ✅");
+}else{
+alert("Wrong OTP ❌");
+}
+
+}
+generatedOTP = Math.floor(100000 + Math.random()*900000);
+
+emailjs.send("Service_zxauxho,"template_i0vckdi",{
+to_email: email,
+otp: generatedOTP
+}).then(()=>{
+alert("OTP Sent ✅");
+document.getElementById("otpBox").style.display="block";
+}).catch(()=>{
+alert("Error ❌");
+console.log("OTP:", generatedOTP);
+});
+
+}
 </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
