@@ -8,6 +8,7 @@
 emailjs.init("zFU2kJGQjIK3IVtQ_");
 })();
     let generatedOTP = "";
+    let otpExpiry=0
 let otpVerified = false;
     function sendOTP(){
 
@@ -30,7 +31,7 @@ alert("Wrong OTP ❌");
 
 }
 generatedOTP = Math.floor(100000 + Math.random()*900000);
-
+otpExpiryDate.now() +5*60*1000; //5min
 emailjs.send("Service_zxauxho,"template_i0vckdi",{
 to_email: email,
 otp: generatedOTP
